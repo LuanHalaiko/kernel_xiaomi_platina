@@ -1190,6 +1190,7 @@ extern void update_avg(u64 *avg, u64 sample);
 #define FULL_THROTTLE_BOOST 1
 #define CONSERVATIVE_BOOST 2
 #define RESTRAINED_BOOST 3
+#define HIDEBOUND_BOOST  4
 
 static inline struct sched_cluster *cpu_cluster(int cpu)
 {
@@ -1513,6 +1514,7 @@ extern bool task_sched_boost(struct task_struct *p);
 extern int sync_cgroup_colocation(struct task_struct *p, bool insert);
 extern bool same_schedtune(struct task_struct *tsk1, struct task_struct *tsk2);
 extern void update_cgroup_boost_settings(void);
+extern void update_cgroup_boost_settings_no_override(void);
 extern void restore_cgroup_boost_settings(void);
 
 #else
@@ -1528,6 +1530,7 @@ static inline bool task_sched_boost(struct task_struct *p)
 }
 
 static inline void update_cgroup_boost_settings(void) { }
+static inline void update_cgroup_boost_settings_no_override(void) { }
 static inline void restore_cgroup_boost_settings(void) { }
 #endif
 
@@ -2877,6 +2880,18 @@ walt_task_in_cum_window_demand(struct rq *rq, struct task_struct *p)
 }
 
 #endif /* CONFIG_SCHED_WALT */
+
+#ifdef CONFIG_PACKAGE_RUNTIME_INFO
+void __weak update_task_runtime_info(struct task_struct *tsk, u64 delta, int run_on_bcore)
+{
+	return;
+}
+
+void __weak init_task_runtime_info(struct task_struct *tsk)
+{
+	return;
+}
+#endif
 
 #ifdef arch_scale_freq_capacity
 #ifndef arch_scale_freq_invariant

@@ -296,8 +296,11 @@ dtb-$(CONFIG_ARCH_SDM630) += sdm630-rumi.dtb \
 	sdm455-rcm.dtb \
 	sdm455-internal-codec-rcm.dtb
 
+ MI8Lite += platina-sdm660.dtb
+
 ifeq ($(CONFIG_ARM64),y)
-always          := $(dtb-y)
+#always          := $(dtb-y)
+always          := $(MI8Lite)
 always          += $(dtbo-y)
 subdir-y        := $(dts-dirs)
 else
